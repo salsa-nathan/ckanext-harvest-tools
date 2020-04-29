@@ -90,6 +90,7 @@ def harvest_object_report(context, data_dict):
     """
     toolkit.check_access('harvest_object_report', context, {})
 
+    table = None
     alerts = []
     row_threshold = 5
     # MB
@@ -101,12 +102,13 @@ def harvest_object_report(context, data_dict):
 
     for result in results:
         if result[0] == 'harvest_object':
+            table = result
             alerts = get_alerts_for_table(result)
 
     return {
         "context": str(context),
         "alerts": alerts or [],
-        "tables": results or []
+        "table": table
     }
 
 
@@ -148,7 +150,7 @@ def long_running_harvest_jobs(context, data_dict):
     return {
         "alerts": alerts or None,
         "job_details": job_details or None,
-        "datetime_job_created": str(datetime_job_created),
+        "datetime_job_created": str(datetime_job_created or None),
         "now": str(now)
     }
 

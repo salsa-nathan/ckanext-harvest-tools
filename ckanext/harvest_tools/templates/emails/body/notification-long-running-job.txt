@@ -1,0 +1,9 @@
+There is an issue with a long running harvest job.
+{% for alert in alerts %}
+{{ alert }}
+{% endfor %}
+{% for url in urls %}
+{{ url }}
+{% endfor %}
+
+
