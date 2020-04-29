@@ -1,0 +1,42 @@
+{% extends "page.html" %}
+
+{% block title %}{{ _('Harvesting Sources') }} - {{ super() }}{% endblock %}
+
+{% block breadcrumb_content %}
+    <li>
+        <a href="/harvest">Harvest Sources</a>
+    </li>
+{% endblock %}
+
+{% block primary %}
+
+    <h1>Harvest DB table information</h1>
+
+    {% if tables %}
+        <small>
+            <table class="table table-striped">
+                <thead>
+                    <th>Table name</th>
+                    <th width="13%">Row estimate</th>
+                    <th width="13%">Index</th>
+                    <th width="13%">TOAST</th>
+                    <th width="13%">Table</th>
+                    <th width="13%">Total</th>
+                </thead>
+                <tbody>
+                {% for table in tables %}
+                    <tr>
+                        <td>{{ table[0] }}</td>
+                        <td>{{ table[1] }}</td>
+                        <td>{{ table[7] }}</td>
+                        <td>{{ table[8] }}</td>
+                        <td>{{ table[9] }}</td>
+                        <td>{{ table[6] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </small>
+    {% endif %}
+
+{% endblock %}
