@@ -89,8 +89,7 @@ class LongRunning(CkanCommand):
                 urls.append(config.get('ckan.site_url') + '/harvest/' + source_id + '/job/' + job_id)
 
             if report['alerts']:
-                helpers.send_email(
-                    to='nathan@salsadigital.com.au',
+                helpers.send_notification_email(
                     template='notification-long-running-job',
                     extra_vars={
                         "alerts": report['alerts'],
