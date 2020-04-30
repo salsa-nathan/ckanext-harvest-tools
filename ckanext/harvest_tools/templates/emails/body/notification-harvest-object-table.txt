@@ -1,0 +1,7 @@
+This email alert is to notify you that the `harvest_object` table size may require investigation.
+
+Please review the details below:
+{% for alert in alerts %}
+{{ alert }}{% endfor %}
+
+Further details can be viewed here: {{ url }}

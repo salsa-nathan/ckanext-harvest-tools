@@ -16,11 +16,25 @@ Install the extension:
     
     python setup.py develop
 
+## Configuration
+
 Enable the extension by adding `harvest_tools` to `ckan.plugins` in your CKAN `.ini` file:
 
     ckan.plugins = ... harvest_tools ... harvest
 
-__Note:__ this extension needs to appear before the `ckanext-harvest` extensions in order for the template overrides to work.
+__Note:__ this extension needs to appear before the `ckanext-harvest` extensions as this extension extends some default harvest templates.
+
+Set the email recipient of the alert email notifications (if not set, `email_to` is used):
+
+    ckanext.harvest_tools.email_to = you@email.com
+
+Set the database connections details as required (defaults shown below if not set):
+
+    ckanext.harvest_tools.db_host = postgres
+    ckanext.harvest_tools.db_port = 5432
+    ckanext.harvest_tools.db_name = ckan
+    ckanext.harvest_tools.db_user = ckan
+    ckanext.harvest_tools.db_pass = ckan
 
 ## Added functionality
 
@@ -65,3 +79,26 @@ Performs the following:
     VACUUM(FULL, ANALYZE) harvest_object;
     REINDEX TABLE harvest_object;
 
+### Paster commands
+
+This extension introduces the following `paster` commands:
+
+#### check_harvest_objects
+
+    paster --plugin=ckanext-harvest-tools check_harvest_objects -c /app/ckan/default/production.ini
+
+Queries the CKAN database for information about the `harvest_object` table and assesses if it is getting too big.
+
+If the `harvest_object` table size is over a certain threshold (defined in the `harvest_object_report` action) an email alert will be sent.
+
+#### clean_harvest_objects
+
+    paster --plugin=ckanext-harvest-tools clean_harvest_objects -c /app/ckan/default/production.ini
+
+Paster command to run the `clean_harvest_object_table` action above.
+
+#### long_running_jobs
+
+    paster --plugin=ckanext-harvest-tools long_running_jobs -c /app/ckan/default/production.ini
+
+Attempts to detect any long running harvest jobs and send an email alert.

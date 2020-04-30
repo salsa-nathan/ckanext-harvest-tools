@@ -1,23 +1,11 @@
-import psycopg2
-
 from ckan.logic import side_effect_free
 from ckan.plugins import toolkit
+from ckanext.harvest_tools import helpers
 from datetime import datetime
+from psycopg2 import Error
+
 
 log = __import__('logging').getLogger(__name__)
-
-
-def get_connection():
-    try:
-        return psycopg2.connect(
-            user="ckan",
-            password="ckan",
-            host="postgres",
-            port="5432",
-            database="ckan"
-        )
-    except (Exception, psycopg2.Error) as error:
-        log.error("Error while connecting to PostgreSQL", error)
 
 
 def get_harvest_table_info():
@@ -42,7 +30,7 @@ def get_harvest_table_info():
             ) a;"""
 
     try:
-        connection = get_connection()
+        connection = helpers.get_connection()
 
         # Ref.: https://stackoverflow.com/a/43634941/9012261
         connection.autocommit = True
@@ -50,34 +38,13 @@ def get_harvest_table_info():
         cursor = connection.cursor()
         cursor.execute(sql_query_text)
         return cursor.fetchall()
-    except (Exception, psycopg2.Error) as error:
-        log.error("Error while connecting to PostgreSQL", error)
+    except (Exception, Error) as error:
+        log.error("Error while connecting to PostgreSQL", str(error))
     finally:
         # closing database connection.
         if (connection):
             cursor.close()
             connection.close()
-            #print("PostgreSQL connection is closed\n------------------------------------------------\n")
-
-
-def get_alerts_for_table(table_data, row_threshold=5, total_bytes_threshold=((1024 * 1024) * 2), toast_bytes_threshold=((1024 * 1024) * 1)):
-    alerts = []
-    table_name = table_data[0]
-    row_estimate = table_data[1]
-    total_bytes = table_data[2]
-    toast_bytes = table_data[4]
-
-    # Check `row_estimate`
-    if row_estimate > row_threshold:
-        alerts.append('Table: `%s` has more than %s rows' % (table_name, row_threshold))
-    # Check `total_bytes`
-    if total_bytes > total_bytes_threshold:
-        alerts.append('Table: `%s` has %s total_bytes' % (table_name, total_bytes))
-    # Check `toast_bytes`
-    if toast_bytes > toast_bytes_threshold:
-        alerts.append('Table: `%s` has %s toast_bytes' % (table_name, toast_bytes))
-
-    return alerts
 
 
 @side_effect_free
@@ -92,18 +59,13 @@ def harvest_object_report(context, data_dict):
 
     table = None
     alerts = []
-    row_threshold = 5
-    # MB
-    total_bytes_threshold = (1024 * 1024) * 2
-    # MB
-    toast_bytes_threshold = (1024 * 1024) * 1
 
     results = get_harvest_table_info()
 
     for result in results:
         if result[0] == 'harvest_object':
             table = result
-            alerts = get_alerts_for_table(result)
+            alerts = helpers.get_alerts_for_table(result)
 
     return {
         "context": str(context),
@@ -174,7 +136,7 @@ def clean_harvest_object_table(context, data_dict):
                     WHERE current != 't'
         );"""
 
-        connection = get_connection()
+        connection = helpers.get_connection()
 
         # Ref.: https://stackoverflow.com/a/43634941/9012261
         connection.autocommit = True
