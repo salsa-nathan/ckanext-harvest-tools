@@ -7,20 +7,6 @@ from ckanext.harvest_tools.logic.action import get
 
 
 class HarvestToolsController(base.BaseController):
-    def index(self):
-        vars = {}
-
-        ckan = ckanapi.RemoteCKAN('https://ckan-datavic-ckan-odp-develop.au.amazee.io', apikey='MY-SECRET-API-KEY')
-
-        try:
-            sources = ckan.action.harvest_source_list()
-            vars['sources'] = sources
-        except Exception, e:
-            vars['errors'] = str(e)
-
-        return base.render('harvest_tools/index.html',
-                           extra_vars=vars)
-
     def harvest_table_report(self):
         vars = {}
 

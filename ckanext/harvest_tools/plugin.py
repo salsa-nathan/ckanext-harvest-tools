@@ -32,7 +32,6 @@ class HarvestToolsPlugin(plugins.SingletonPlugin):
 
     def get_auth_functions(self):
         return {
-            #'harvest_source_list': dv_harvest_source_list,
             'abort_harvest_job': auth_get.abort_harvest_job,
             'clean_harvest_object_table': auth_get.clean_harvest_object_table,
             'harvest_object_report': auth_get.harvest_object_report,
