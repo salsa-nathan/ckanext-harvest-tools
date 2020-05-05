@@ -86,6 +86,7 @@ def long_running_harvest_jobs(context, data_dict):
 
     alerts = []
     job_details = []
+    datetime_job_created = None
 
     now = datetime.now()
 
@@ -112,7 +113,7 @@ def long_running_harvest_jobs(context, data_dict):
     return {
         "alerts": alerts or None,
         "job_details": job_details or None,
-        "datetime_job_created": str(datetime_job_created or None),
+        "datetime_job_created": str(datetime_job_created),
         "now": str(now)
     }
 
@@ -154,7 +155,7 @@ def clean_harvest_object_table(context, data_dict):
         cursor.execute("REINDEX TABLE harvest_object;")
         log.info('Success: `harvest_object` table re-indexed')
 
-    except (Exception, psycopg2.Error) as error:
+    except (Exception, Error) as error:
         log.error("Error while connecting to PostgreSQL", error)
     finally:
         # closing database connection.
