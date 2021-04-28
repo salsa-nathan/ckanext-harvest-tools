@@ -3,10 +3,10 @@
 {% block primary_content_inner %}
 
     {{ super() }}
+     
+    {% if job.status == 'Running' and h.check_access('abort_harvest_job') %}
 
-    {% if c.job.status == 'Running' and h.check_access('abort_harvest_job') %}
-
-        <a href="/harvest/abort_job/{{ c.job.id }}" class="btn btn-danger" data-module="confirm-action" data-module-i18n="Are you sure"
+        <a href="{{ h.url_for('harvest_tools.abort_harvest_job', harvest_job_id=job.id) }}" class="btn btn-danger" data-module="confirm-action" data-module-i18n="Are you sure"
          title="{{ _('Abort Harvest Job') }}">Abort Job</a>
 
     {% endif %}
