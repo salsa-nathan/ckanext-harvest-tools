@@ -82,11 +82,6 @@ setup(
         [ckan.plugins]
         harvest_tools=ckanext.harvest_tools.plugin:HarvestToolsPlugin
 
-        [paste.paster_command]
-        check_harvest_objects=ckanext.harvest_tools.commands:CheckHarvestObjects
-        clean_harvest_objects=ckanext.harvest_tools.commands:Clean
-        long_running_jobs=ckanext.harvest_tools.commands:LongRunning
-
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
     ''',
