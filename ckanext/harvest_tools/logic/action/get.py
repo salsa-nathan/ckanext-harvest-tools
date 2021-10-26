@@ -1,4 +1,3 @@
-from ckan.logic import side_effect_free
 from ckan.plugins import toolkit
 from ckanext.harvest_tools import helpers
 from datetime import datetime
@@ -6,6 +5,9 @@ from psycopg2 import Error
 
 
 log = __import__('logging').getLogger(__name__)
+side_effect_free = toolkit.side_effect_free
+check_access = toolkit.check_access
+get_action = toolkit.get_action
 
 
 def get_harvest_table_info():
@@ -55,7 +57,7 @@ def harvest_object_report(context, data_dict):
     :param data_dict:
     :return:
     """
-    toolkit.check_access('harvest_object_report', context, {})
+    check_access('harvest_object_report', context, {})
 
     table = None
     alerts = []
@@ -82,7 +84,7 @@ def long_running_harvest_jobs(context, data_dict):
     :param data_dict:
     :return:
     """
-    toolkit.check_access('long_running_harvest_jobs', context, {})
+    check_access('long_running_harvest_jobs', context, {})
 
     alerts = []
     job_details = []
@@ -90,7 +92,7 @@ def long_running_harvest_jobs(context, data_dict):
 
     now = datetime.now()
 
-    job_list = toolkit.get_action('harvest_job_list')(context, {"status": "Running"})
+    job_list = get_action('harvest_job_list')(context, {"status": "Running"})
 
     for job in job_list:
         # e.g. 2020-04-20 02:58:01.670143
@@ -126,7 +128,7 @@ def clean_harvest_object_table(context, data_dict):
     :param data_dict:
     :return:
     """
-    toolkit.check_access('clean_harvest_object_table', context, {})
+    check_access('clean_harvest_object_table', context, {})
 
     try:
         sql_query_text = """\
@@ -164,4 +166,3 @@ def clean_harvest_object_table(context, data_dict):
             connection.close()
 
     return True
-
