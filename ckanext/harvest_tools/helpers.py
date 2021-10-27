@@ -1,8 +1,11 @@
 import psycopg2
-
-from ckan.common import config
+import ckan.plugins.toolkit as tk
 
 log = __import__('logging').getLogger(__name__)
+config = tk.config
+render = tk.render
+enqueue_job = tk.enqueue_job
+
 
 ROW_THRESHOLD = 100000
 TOTAL_BYTES_THRESHOLD = ((1024 * 1024) * 1000)
@@ -44,16 +47,14 @@ def send_notification_email(template, to=None, extra_vars=[]):
     :param extra_vars: list
     :return:
     """
-    from ckan.lib.base import render_jinja2
-    from ckan.plugins import toolkit
 
     if not to:
         to = config.get('ckanext.harvest_tools.email_to', config.get('email_to'))
 
-    subject = config.get('ckan.site_title') + ' - ' + render_jinja2('emails/subject/{0}.txt'.format(template), extra_vars)
-    body = render_jinja2('emails/body/{0}.txt'.format(template), extra_vars)
+    subject = config.get('ckan.site_title') + ' - ' + render('emails/subject/{0}.txt'.format(template), extra_vars)
+    body = render('emails/body/{0}.txt'.format(template), extra_vars)
 
-    toolkit.enqueue_job(send_email, [to, subject, body], title=u'Harvest tools email alert')
+    enqueue_job(send_email, [to, subject, body], title=u'Harvest tools email alert')
 
 
 def get_connection():
