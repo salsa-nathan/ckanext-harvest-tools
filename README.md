@@ -79,13 +79,13 @@ Performs the following:
     VACUUM(FULL, ANALYZE) harvest_object;
     REINDEX TABLE harvest_object;
 
-### Paster commands
+### CLI commands
 
 This extension introduces the following `paster` commands:
 
 #### check_harvest_objects
 
-    paster --plugin=ckanext-harvest-tools check_harvest_objects -c /app/ckan/default/production.ini
+    ckan harvest-tools check-harvest-object -c /app/ckan/default/ckan.ini
 
 Queries the CKAN database for information about the `harvest_object` table and assesses if it is getting too big.
 
@@ -93,12 +93,12 @@ If the `harvest_object` table size is over a certain threshold (defined in the `
 
 #### clean_harvest_objects
 
-    paster --plugin=ckanext-harvest-tools clean_harvest_objects -c /app/ckan/default/production.ini
+    ckan harvest-tools clean-harvest-objects -c /app/ckan/default/ckan.ini
 
 Paster command to run the `clean_harvest_object_table` action above.
 
 #### long_running_jobs
 
-    paster --plugin=ckanext-harvest-tools long_running_jobs -c /app/ckan/default/production.ini
+    ckan harvest-tools long-running -c /app/ckan/default/ckan.ini
 
 Attempts to detect any long running harvest jobs and send an email alert.
