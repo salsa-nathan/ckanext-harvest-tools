@@ -28,8 +28,7 @@ def send_email(to, subject, body):
         'recipient_email': to,
         'recipient_name': to,
         'subject': subject,
-        'body': body,
-        'headers': {'reply-to': config.get('smtp.mail_from')}
+        'body': body
     }
 
     try:
